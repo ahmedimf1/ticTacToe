@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe</title>
+  <meta charset="UTF-8"/>
+
+  <style>
+      div#gameboard{
+          display: inline-grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          grid-template-rows: 1fr 1fr 1fr;
+
+          border-color: black;
+          color:brown;
+          min-width: 440px;
+          min-height: 440px;
+          gap: 1px 1px;
+          justify-items: stretch;
+          align-items: stretch;
+          
+          
+      }
+      div.tile{
+          display: flex;
+          border-color: rgb(255, 255, 255);
+          border-style: solid;
+          background-color: beige;
+          border-width: 3px;
+          align-items: center;
+          justify-content: center;
+          font-size: 90px;
+          font-family: fantasy; 
+      }
+      div.tile:hover{
+          border-color: rgb(250, 136, 136);
+          border-style: solid;
+
+      }
+
+      button.boardbtn{
+          background-color: rgb(230, 217, 213);
+          margin-top: 2em;
+      }
+      button.boardbtn:hover{
+          border-color: rgb(250, 136, 136);
+          border-style: solid;
+      }
+  </style>
+</head>
+<body>
+    <div id = "gameboard">
+        <div id= "a0" class = "tile" onclick=gameBoard.occupy(id,currentMarker)>tes</div>
+        <div id= "a1" class = "tile" onclick=gameBoard.occupy(id,currentMarker)></div>
+        <div id= "a2" class = "tile"onclick=gameBoard.occupy(id,currentMarker)></div>
+        <div id= "b0" class = "tile"onclick=gameBoard.occupy(id,currentMarker)></div>
+        <div id= "b1" class = "tile"onclick=gameBoard.occupy(id,currentMarker)></div>
+        <div id= "b2" class = "tile"onclick=gameBoard.occupy(id,currentMarker)>t</div>
+        <div id= "c0" class = "tile"onclick=gameBoard.occupy(id,currentMarker)></div>
+        <div id= "c1" class = "tile"onclick=gameBoard.occupy(id,currentMarker)></div>
+        <div id= "c2" class = "tile"onclick=gameBoard.occupy(id,currentMarker)></div>
+        <button id= "p1Btn" class = "boardbtn">Player 1</button>
+        <button id= "p2Btn" class = "boardbtn">Player 2</button>
+        <button id= "resetBtn" class = "boardbtn" onclick=initializeGame()>RESET / Start</button>
+    </div>
+    
+  <script>
+    // Your JavaScript goes here!
+	let playerFactory = (name,marker)=>{
+
+        let play = ()=>{
+            //player clicks marker
+        }
+        return{name,marker,play}
+    }
+
+    function initializeGame(){
+        //clear the board 
+        gameBoard.clear()
+        let player1 = playerFactory(prompt("p1 Name","CPU"),"X")
+        let player2 = playerFactory(prompt("p2 Name","CPU "),"Y")
+        let p1Btn = document.getElementById("p1Btn")
+        let p2Btn = document.getElementById("p2Btn")
+        p1Btn.innerText = player1.name + `(${player1.marker})`
+        p2Btn.innerText = player2.name + `(${player2.marker})`
+    }
+//changes player and markerwhen DOM PlayerButtons are clicked
+    let btns = document.querySelectorAll("button") 
+    let currentPlayer , currentMarker
+    btns.forEach((btn)=>{
+        btn.addEventListener("click", (event)=>{
+            if (event.target.id!="resetBtn"){
+                currentPlayer = event.target.innerText
+                currentMarker = currentPlayer.split("(")[1][0]
+            }
+                        
+        })
+    })
+    
+
+    let gameBoard = ((/*marker,position*/)=>{
+        // let arrA =[1]
+        // let arrB = [2]
+        // let arrC = [3];
+        
+        //current player: who is clicking at the moment. idneitfy using event listener on player buttons
+        
+        let buttonsFunction = (event) =>{
+            console.log(event)
+        }
+
+        let gridObj = {a:[], b:[], c:[],}
+        //tanslate id position to arr and check for vacacny.
+        let updateDisplay = (state)=> {
+            // for (let i=0; i<3; i++){
+            //     gridObj.a[i] = document.getElementById(`A${i}`).innerText
+            //     gridObj.b[i] = document.getElementById(`B${i}`).innerText
+            //     gridObj.c[i] = document.getElementById(`C${i}`).innerText
+            // }
+            // if(state=="reset"){
+            //     arrA =[], arrB = [], arrC = []; 
+            //     }
+            //     console.log(arrA[0])
+
+            for (let i=0; i<3; i++){
+                document.getElementById(`a${i}`).innerText = gridObj.a[i] || ""
+                document.getElementById(`b${i}`).innerText = gridObj.b[i] || ""
+                document.getElementById(`c${i}`).innerText = gridObj.c[i] || ""
+            }
+
+            switch(true){
+                case (gridObj["a"][0] === gridObj["a"][1] && gridObj["a"][1] === gridObj["a"][2] &&(gridObj["a"][1]!=undefined)):
+                case (gridObj["b"][0] === gridObj["b"][1] && gridObj["b"][1] === gridObj["b"][2] &&(gridObj["b"][1]!=undefined)):
+                case (gridObj["c"][0] === gridObj["c"][1] && gridObj["c"][1] === gridObj["c"][2] &&(gridObj["c"][1]!=undefined)):
+                case (gridObj["a"][0] === gridObj["b"][0] && gridObj["b"][0] === gridObj["c"][0] &&(gridObj["a"][0]!=undefined)):
+                case (gridObj["a"][1] === gridObj["b"][1] && gridObj["b"][1] === gridObj["c"][1] &&(gridObj["a"][1]!=undefined)):
+                case (gridObj["a"][2] === gridObj["b"][2] && gridObj["b"][2] === gridObj["c"][2] &&(gridObj["a"][2]!=undefined)):
+                case (gridObj["a"][0] === gridObj["b"][1] && gridObj["b"][1] === gridObj["c"][2] &&(gridObj["a"][0]!=undefined)):
+                case (gridObj["a"][2] === gridObj["b"][1] && gridObj["b"][1] === gridObj["c"][0] &&(gridObj["a"][2]!=undefined)):
+
+                    console.log("Winner is : "+currentPlayer)
+                    gameEnd(currentPlayer.split("(")[0])
+                    break;
+
+                /*case (gridObj["a"][0] === gridObj["b"][0] && gridObj["b"][0] === gridObj["c"][0] &&(gridObj["a"][0]!=undefined)):
+                case (gridObj["a"][1] === gridObj["b"][1] && gridObj["b"][1] === gridObj["c"][1] &&(gridObj["a"][1]!=undefined)):
+                case (gridObj["a"][2] === gridObj["b"][2] && gridObj["b"][2] === gridObj["c"][2] &&(gridObj["a"][2]!=undefined)):
+
+                    alert("Winner is : "+currentMarker)
+                    break; 
+                
+                case (gridObj["a"][0] === gridObj["b"][1] && gridObj["b"][1] === gridObj["c"][2] &&(gridObj["a"][0]!=undefined)):
+                case (gridObj["a"][2] === gridObj["b"][1] && gridObj["b"][1] === gridObj["c"][0] &&(gridObj["a"][2]!=undefined)):
+                    alert("Winner is : "+currentMarker)
+                    break; */
+                default:
+                    console.log("keep Playing")
+                    break;
+            }
+
+        }
+        let clear = () =>{ // clears or resets grid
+            gridObj = {a:[], b:[], c:[]}
+            updateDisplay()
+        }
+
+        let occupy = (position/*id*/, marker)=>{//puts marker on the specified grid position
+            //checks if player button is clicked
+            if(gridObj["lastPlayed"]===undefined && marker === undefined){
+                alert("Please Choose a player first!")
+
+            }
+            // prohibits two consecutive turns for the same player
+            else if(gridObj["lastPlayed"]!=marker){
+                let row = position.split("")[0], column = position.split("")[1]
+                if(gridObj[row][column]){
+                  alert("invalid")  
+                }
+                else{
+                    gridObj[row][column]= marker
+                    gridObj["lastPlayed"]=marker
+                    updateDisplay()
+                    return gridObj 
+                }
+            }
+            else{
+                alert("not your turn, Please change Player!!")
+            }
+            
+        }
+
+        let gameEnd = (winner)=>{
+            alert("The game has Ended and the Winner is: "+winner)
+            if(confirm("Would you like to play another game?")){
+                initializeGame()
+            }
+            else{
+                alert ("Bye!")
+
+            }
+        }
+
+        return{updateDisplay,clear,occupy,buttonsFunction,currentPlayer,gridObj}
+        
+    })();
+
+    function render(){
+
+    }
+
+
+  </script>
+</body>
+</html>
